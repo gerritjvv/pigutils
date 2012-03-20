@@ -17,35 +17,51 @@ import org.apache.pig.data.Tuple;
  * The data must be sorted by timestamp before being sent to this UDF.<br/>
  * 
  */
-public class TimeStampGrouping extends EvalFunc<Integer> {
+public class TimeStampGrouping extends EvalFunc<String> {
 
-	long prevTs = 0;
-	Map<String, Integer> groupMap = new HashMap<String, Integer>();
+	final Map<String, TSDimension> tsMap = new HashMap<String, TimeStampGrouping.TSDimension>();
+	final Map<String, Integer> groupMap = new HashMap<String, Integer>();
 
 	@Override
-	public Integer exec(Tuple tuple) throws IOException {
+	public String exec(Tuple tuple) throws IOException {
 
-		if (tuple.size() != 3) {
+		if (tuple != null && tuple.size() == 3) {
 
-			String key = tuple.get(0).toString();
-			long ts = ((Number) tuple.get(1)).longValue();
-			long timeWindow = ((Number) tuple.get(2)).longValue();
+			final String key = tuple.get(0).toString();
+			final long ts = ((Number) tuple.get(1)).longValue();
+			final long timeWindow = ((Number) tuple.get(2)).longValue();
 
 			Integer groupI = groupMap.get(key);
 			if (groupI == null) {
 				groupI = new Integer(1);
 				groupMap.put(key, groupI);
+				tsMap.put(key + groupI, new TSDimension(ts));
+
 			} else {
-				if (!isInWindow(prevTs, ts, timeWindow)) {
-					// if not in window we increment to a new group
+				final String dimensionKey = key + groupI;
+				final TSDimension tsDimension = tsMap.get(dimensionKey);
+
+				if(tsDimension == null){
+					System.out.println("Null");
+				}
+				
+				if (!isInWindow(tsDimension, ts, timeWindow)) {
+					// if not in window we increment to a new group and
+					// tsdimension window
 					groupI = new Integer(groupI.intValue() + 1);
 					groupMap.put(key, groupI);
-				}
-			}
-			
-			prevTs = ts;
+					tsMap.put(key + groupI, new TSDimension(ts));
 
-			return groupI;
+				} else {
+					// else adjust the ts dimension window to include the new
+					// timestamp value
+					tsDimension.minTs = Math.min(ts, tsDimension.minTs);
+					tsDimension.maxTs = Math.max(ts, tsDimension.maxTs);
+				}
+
+			}
+
+			return key+groupI;
 
 		} else {
 			return null;
@@ -53,12 +69,33 @@ public class TimeStampGrouping extends EvalFunc<Integer> {
 
 	}
 
-	private static final boolean isInWindow(long prevts, long ts, long window) {
-		long v = ts - prevts;
-		if (v < 0)
-			v *= -1;
+	/**
+	 * Calculate to see if 
+	 * @param prevts
+	 * @param ts
+	 * @param window
+	 * @return
+	 */
+	private static final boolean isInWindow(TSDimension prevts, long ts,
+			long window) {
+		return positive(ts - prevts.minTs) < window
+				|| positive(ts - prevts.maxTs) < window;
+	}
 
-		return v < window;
+	private static final long positive(long res) {
+		return (res < 0) ? res * -1 : res;
+	}
+
+	static class TSDimension {
+
+		long minTs;
+		long maxTs;
+
+		public TSDimension(long ts) {
+			minTs = ts;
+			maxTs = ts;
+		}
+
 	}
 
 }
