@@ -19,8 +19,10 @@ import org.apache.pig.data.Tuple;
  */
 public class TimeStampGrouping extends EvalFunc<String> {
 
-	final Map<String, TSDimension> tsMap = new HashMap<String, TimeStampGrouping.TSDimension>();
-	final Map<String, Integer> groupMap = new HashMap<String, Integer>();
+	String currentKey = "";
+	TSDimension currentDimension;
+	Integer groupI;
+	String currentDimensionKey;
 
 	@Override
 	public String exec(Tuple tuple) throws IOException {
@@ -31,37 +33,30 @@ public class TimeStampGrouping extends EvalFunc<String> {
 			final long ts = ((Number) tuple.get(1)).longValue();
 			final long timeWindow = ((Number) tuple.get(2)).longValue();
 
-			Integer groupI = groupMap.get(key);
-			if (groupI == null) {
+			if (!currentKey.equals(key)) {
 				groupI = new Integer(1);
-				groupMap.put(key, groupI);
-				tsMap.put(key + groupI, new TSDimension(ts));
-
+				currentKey = key;
+				currentDimension = new TSDimension(ts);
 			} else {
-				final String dimensionKey = key + groupI;
-				final TSDimension tsDimension = tsMap.get(dimensionKey);
 
-				if(tsDimension == null){
-					System.out.println("Null");
-				}
-				
-				if (!isInWindow(tsDimension, ts, timeWindow)) {
+				if (!isInWindow(currentDimension, ts, timeWindow)) {
 					// if not in window we increment to a new group and
 					// tsdimension window
 					groupI = new Integer(groupI.intValue() + 1);
-					groupMap.put(key, groupI);
-					tsMap.put(key + groupI, new TSDimension(ts));
+					currentDimension = new TSDimension(ts);
 
 				} else {
 					// else adjust the ts dimension window to include the new
 					// timestamp value
-					tsDimension.minTs = Math.min(ts, tsDimension.minTs);
-					tsDimension.maxTs = Math.max(ts, tsDimension.maxTs);
+					currentDimension.minTs = Math.min(ts,
+							currentDimension.minTs);
+					currentDimension.maxTs = Math.max(ts,
+							currentDimension.maxTs);
 				}
 
 			}
 
-			return key+groupI;
+			return key + groupI;
 
 		} else {
 			return null;
@@ -70,7 +65,8 @@ public class TimeStampGrouping extends EvalFunc<String> {
 	}
 
 	/**
-	 * Calculate to see if 
+	 * Calculate to see if
+	 * 
 	 * @param prevts
 	 * @param ts
 	 * @param window
