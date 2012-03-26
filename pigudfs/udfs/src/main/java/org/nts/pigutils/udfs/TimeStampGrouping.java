@@ -1,8 +1,6 @@
 package org.nts.pigutils.udfs;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.pig.EvalFunc;
 import org.apache.pig.data.Tuple;
