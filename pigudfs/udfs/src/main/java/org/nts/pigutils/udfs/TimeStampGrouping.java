@@ -73,12 +73,21 @@ public class TimeStampGrouping extends EvalFunc<String> {
 	 */
 	private static final boolean isInWindow(TSDimension prevts, long ts1,
 			long ts2, long window) {
-		final long diff1 = positive(ts1 - prevts.minTs);
-		final long diff2 = positive(ts1 - prevts.maxTs);
-		final long diff3 = positive(ts2 - prevts.minTs);
-		final long diff4 = positive(ts2 - prevts.maxTs);
-		return diff1 <= window || diff2 <= window || diff3 <= window
-				|| diff4 <= window;
+
+		if (ts1 <= prevts.maxTs && ts1 >= prevts.minTs || ts2 <= prevts.maxTs
+				&& ts2 >= prevts.minTs) {
+			// check to see if ts1 or ts2 is inside the current time window
+			return true;
+		} else {
+			// otherwise see if any of the points are within the min max window
+			// range
+			final long diff1 = positive(ts1 - prevts.minTs);
+			final long diff2 = positive(ts1 - prevts.maxTs);
+			final long diff3 = positive(ts2 - prevts.minTs);
+			final long diff4 = positive(ts2 - prevts.maxTs);
+			return diff1 <= window || diff2 <= window || diff3 <= window
+					|| diff4 <= window;
+		}
 	}
 
 	private static final long positive(long res) {
