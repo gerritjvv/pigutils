@@ -59,7 +59,7 @@ public class TestTimeStampGrouping {
 
 		for (int i = 0; i < aSize; i++) {
 			Tuple t = fact.newTuple(Arrays.asList("A", cal.getTimeInMillis(),
-					900000L));
+					cal.getTimeInMillis(), 900000L));
 			data[i] = t;
 			cal.add(Calendar.MINUTE, 10);
 
@@ -69,7 +69,7 @@ public class TestTimeStampGrouping {
 		for (int i = aSize; i < totalSize; i++) {
 
 			Tuple t = fact.newTuple(Arrays.asList("B", cal.getTimeInMillis(),
-					900000L));
+					cal.getTimeInMillis(), 900000L));
 			data[i] = t;
 			cal.add(Calendar.MINUTE, 10);
 

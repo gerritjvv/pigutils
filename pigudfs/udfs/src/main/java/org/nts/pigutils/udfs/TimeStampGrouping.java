@@ -25,30 +25,31 @@ public class TimeStampGrouping extends EvalFunc<String> {
 	@Override
 	public String exec(Tuple tuple) throws IOException {
 
-		if (tuple != null && tuple.size() == 3) {
+		if (tuple != null && tuple.size() == 4) {
 
 			final String key = tuple.get(0).toString();
-			final long ts = ((Number) tuple.get(1)).longValue();
-			final long timeWindow = ((Number) tuple.get(2)).longValue();
+			final long ts1 = ((Number) tuple.get(1)).longValue();
+			final long ts2 = ((Number) tuple.get(2)).longValue();
+			final long timeWindow = ((Number) tuple.get(3)).longValue();
 
 			if (!currentKey.equals(key)) {
 				groupI = new Integer(1);
 				currentKey = key;
-				currentDimension = new TSDimension(ts);
+				currentDimension = new TSDimension(ts1, ts2);
 			} else {
 
-				if (!isInWindow(currentDimension, ts, timeWindow)) {
+				if (!isInWindow(currentDimension, ts1, ts2, timeWindow)) {
 					// if not in window we increment to a new group and
 					// tsdimension window
 					groupI = new Integer(groupI.intValue() + 1);
-					currentDimension = new TSDimension(ts);
+					currentDimension = new TSDimension(ts1, ts2);
 
 				} else {
 					// else adjust the ts dimension window to include the new
 					// timestamp value
-					currentDimension.minTs = Math.min(ts,
+					currentDimension.minTs = Math.min(ts1,
 							currentDimension.minTs);
-					currentDimension.maxTs = Math.max(ts,
+					currentDimension.maxTs = Math.max(ts2,
 							currentDimension.maxTs);
 				}
 
@@ -70,10 +71,14 @@ public class TimeStampGrouping extends EvalFunc<String> {
 	 * @param window
 	 * @return
 	 */
-	private static final boolean isInWindow(TSDimension prevts, long ts,
-			long window) {
-		return positive(ts - prevts.minTs) < window
-				|| positive(ts - prevts.maxTs) < window;
+	private static final boolean isInWindow(TSDimension prevts, long ts1,
+			long ts2, long window) {
+		final long diff1 = positive(ts1 - prevts.minTs);
+		final long diff2 = positive(ts1 - prevts.maxTs);
+		final long diff3 = positive(ts2 - prevts.minTs);
+		final long diff4 = positive(ts2 - prevts.maxTs);
+		return diff1 <= window || diff2 <= window || diff3 <= window
+				|| diff4 <= window;
 	}
 
 	private static final long positive(long res) {
@@ -85,9 +90,9 @@ public class TimeStampGrouping extends EvalFunc<String> {
 		long minTs;
 		long maxTs;
 
-		public TSDimension(long ts) {
-			minTs = ts;
-			maxTs = ts;
+		public TSDimension(long ts1, long ts2) {
+			minTs = ts1;
+			maxTs = ts2;
 		}
 
 	}
