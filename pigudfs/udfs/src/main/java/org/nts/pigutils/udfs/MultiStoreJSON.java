@@ -39,6 +39,7 @@ import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.util.StorageUtil;
 import org.apache.pig.impl.util.UDFContext;
 import org.apache.pig.impl.util.Utils;
+import org.apache.pig.parser.ParserException;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -127,26 +128,41 @@ public class MultiStoreJSON extends StoreFunc implements StoreMetadata {
 	@SuppressWarnings("unchecked")
 	@Override
 	public OutputFormat getOutputFormat() throws IOException {
-		MultiStorageOutputFormat format = new MultiStorageOutputFormat(schema);
+		
+		MultiStorageOutputFormat format = new MultiStorageOutputFormat(getSchema());
 		format.setKeyValueSeparator(fieldDel);
 		return format;
 	}
 
+	private ResourceSchema getSchema(){
+		if(schema == null){
+			UDFContext udfc = UDFContext.getUDFContext();
+	        Properties p =
+	            udfc.getUDFProperties(this.getClass(), new String[]{udfSignature});
+	        String strSchema = p.getProperty(SCHEMA);
+	        if (strSchema == null) {
+	            throw new RuntimeException("Could not find schema in UDF context");
+	        }
+
+	        // Parse the schema from the string stored in the properties object.
+	        try {
+				schema = new ResourceSchema(Utils.getSchemaFromString(strSchema));
+			} catch (ParserException e) {
+				throw new RuntimeException(e.toString(), e);
+			}
+		}
+
+		if(schema == null)
+			throw new RuntimeException("Schema cannot be null at this point please check the code");
+		
+		return schema;
+		
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void prepareToWrite(RecordWriter writer) throws IOException {
-		UDFContext udfc = UDFContext.getUDFContext();
-        Properties p =
-            udfc.getUDFProperties(this.getClass(), new String[]{udfSignature});
-        String strSchema = p.getProperty(SCHEMA);
-        if (strSchema == null) {
-            throw new IOException("Could not find schema in UDF context");
-        }
-
-        // Parse the schema from the string stored in the properties object.
-        schema = new ResourceSchema(Utils.getSchemaFromString(strSchema));
-
-		this.writer = writer;
+				this.writer = writer;
 	}
 
 	@Override
@@ -169,8 +185,6 @@ public class MultiStoreJSON extends StoreFunc implements StoreMetadata {
 			TextOutputFormat<String, Tuple> {
 
 		private String keyValueSeparator = "\\t";
-		private byte fieldDel = '\t';
-
 		
 		private final ResourceSchema schema;
 		
@@ -276,7 +290,6 @@ public class MultiStoreJSON extends StoreFunc implements StoreMetadata {
 
 		public void setKeyValueSeparator(String sep) {
 			keyValueSeparator = sep;
-			fieldDel = StorageUtil.parseFieldDel(keyValueSeparator);
 		}
 
 		 @SuppressWarnings("unchecked")
