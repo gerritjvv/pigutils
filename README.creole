@@ -6,7 +6,10 @@ This project contains a series of UDFs, Loaders and Stores for pig.
 
 === Maven ===
 
-For easy integration with maven do:
+For easy integration with maven add the following entries to your pom.xml file:
+
+
+==== Repositories ====
 
 {{{
 
@@ -19,3 +22,15 @@ For easy integration with maven do:
 
 }}}
 
+
+==== Dependencies ====
+
+{{{
+
+		<dependency>
+			<groupId>org.nts.pigutils</groupId>
+			<artifactId>udfs</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+
+}}}
