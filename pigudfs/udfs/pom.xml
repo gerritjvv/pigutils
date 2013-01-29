@@ -25,11 +25,13 @@
 			<groupId>org.apache.pig</groupId>
 			<artifactId>pig</artifactId>
 			<version>0.10.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-core</artifactId>
 			<version>0.20.203.0</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
