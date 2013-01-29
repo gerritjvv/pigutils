@@ -32,6 +32,7 @@ import org.apache.pig.ResourceStatistics;
 import org.apache.pig.StoreFunc;
 import org.apache.pig.StoreMetadata;
 import org.apache.pig.backend.executionengine.ExecException;
+import org.apache.pig.builtin.JsonMetadata;
 import org.apache.pig.data.DataBag;
 import org.apache.pig.data.DataType;
 import org.apache.pig.data.Tuple;
@@ -50,6 +51,8 @@ import org.codehaus.jackson.JsonGenerator;
  */
 public class MultiStoreJSON extends StoreFunc implements StoreMetadata {
 
+	private static final String SCHEMA = "json.schema";
+	
 	private int splitFieldIndex = -1; // Index of the key field
 	private String fieldDel; // delimiter of the output record.
 	private Compression comp; // Compression type of output data.
@@ -135,7 +138,7 @@ public class MultiStoreJSON extends StoreFunc implements StoreMetadata {
 		UDFContext udfc = UDFContext.getUDFContext();
         Properties p =
             udfc.getUDFProperties(this.getClass(), new String[]{udfSignature});
-        String strSchema = p.getProperty("json.schema");
+        String strSchema = p.getProperty(SCHEMA);
         if (strSchema == null) {
             throw new IOException("Could not find schema in UDF context");
         }
@@ -392,24 +395,27 @@ public class MultiStoreJSON extends StoreFunc implements StoreMetadata {
 		UDFContext udfc = UDFContext.getUDFContext();
 		Properties p = udfc.getUDFProperties(this.getClass(),
 				new String[] { udfSignature });
-		p.setProperty("udf.schema", s.toString());
+		p.setProperty(SCHEMA, s.toString());
 	}
 
 	@Override
 	public void setStoreFuncUDFContextSignature(String signature) {
 		super.setStoreFuncUDFContextSignature(signature);
-		this.udfSignature = udfSignature;
+		this.udfSignature = signature;
 	}
 
-	public void storeSchema(ResourceSchema schema, String arg1, Job arg2)
+	public void storeSchema(ResourceSchema schema, String location, Job job)
 			throws IOException {
-
+		 JsonMetadata metadataWriter = new JsonMetadata();
+	        byte recordDel = '\n';
+	        byte fieldDel = '\t';
+	        metadataWriter.setFieldDel(fieldDel);
+	        metadataWriter.setRecordDel(recordDel);
+	        metadataWriter.storeSchema(schema, location, job);
 	}
 
 	public void storeStatistics(ResourceStatistics arg0, String arg1, Job arg2)
 			throws IOException {
-		// TODO Auto-generated method stub
-
 	}
 
 }
