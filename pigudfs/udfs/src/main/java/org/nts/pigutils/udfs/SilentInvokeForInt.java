@@ -50,7 +50,8 @@ public class SilentInvokeForInt extends InvokeForInt {
 	@Override
 	public Integer exec(Tuple input) throws IOException {
 		try {
-			return super.exec(input);
+			int val = super.exec(input);
+			return val;
 		} catch (Throwable t) {
 			getPigLogger().warn(t, t.toString(), ERROR.BAD_FORMAT);
 			return -1;
