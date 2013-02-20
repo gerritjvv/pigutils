@@ -265,11 +265,12 @@ public class ProtobufToPig {
     Schema innerSchema = _toSchema(fieldDescriptor.getMessageType(), level+1);
     //innerSchema.setTwoLevelAccessRequired(true);
     if (fieldDescriptor.isRepeated()) {
+    	System.out.println("Field: " + fieldDescriptor.getName() +" is repeated");
     	
       FieldSchema tupleSchema = new FieldSchema(new FieldSchema(fieldDescriptor.getName() + "_tuple", innerSchema, DataType.TUPLE));
       Schema schema = new Schema(tupleSchema);
       FieldSchema retSchema = new FieldSchema(fieldDescriptor.getName(), schema, DataType.BAG);
-      
+      System.out.println("Has Schema: " + retSchema);
       return retSchema;
     } else {
       return new FieldSchema(fieldDescriptor.getName(), innerSchema, DataType.TUPLE);
