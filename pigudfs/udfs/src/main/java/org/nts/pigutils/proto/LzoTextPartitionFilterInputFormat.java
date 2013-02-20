@@ -19,7 +19,6 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.pig.LoadFunc;
 import org.nts.pigutils.store.util.PathPartitionHelper;
 
-import com.hadoop.mapreduce.LzoTextInputFormat;
 
 /**
  * Is a wrapper arround other input formats giving them partition filter
@@ -28,7 +27,7 @@ import com.hadoop.mapreduce.LzoTextInputFormat;
  * @param <K>
  * @param <V>
  */
-public class LzoTextPartitionFilterInputFormat extends LzoTextInputFormat {
+public class LzoTextPartitionFilterInputFormat extends LzoInputFormat {
 
 	transient PathPartitionHelper partitionHelper = new PathPartitionHelper();
 	Class<? extends LoadFunc> loaderClass;
@@ -43,17 +42,14 @@ public class LzoTextPartitionFilterInputFormat extends LzoTextInputFormat {
 
 	
 	@Override
-	public List<InputSplit> getSplits(JobContext arg0) throws IOException {
-		System.out.println("LZOTextPartitionFilterInputFormat:getSplits");
-		return super.getSplits(arg0);
+	public List<InputSplit> getSplits(JobContext ctx) throws IOException {
+		return super.getSplits(ctx);
 	}
 
 
 	@Override
-	protected boolean isSplitable(JobContext arg0, Path arg1) {
-		System.out.println("LZOTextPartitionFilterInputFormat:getSplits2");
-
-		return super.isSplitable(arg0, arg1);
+	protected boolean isSplitable(JobContext context, Path filename) {
+		return super.isSplitable(context, filename);
 	}
 
 
