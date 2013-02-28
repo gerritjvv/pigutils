@@ -20,6 +20,16 @@ Its a collection of Pig UDFS, Loaders and Stores providing functionality on top 
  
   Important, keys are always converted to Strings.
 
+* DateFormat
+  org.nts.pigutils.udfs.DateFormat(tsMillis, 'formatstring')
+  
+  The formatstring is the same as for Java's SimpleDateFormat 
+  e.g. 'yyyy-MM'dd' will format a timestamp to year month and day
+
+* PurifyInt
+  org.nts.udfs.PurifyInt(strInteger)
+
+  Takes a String, removes any non integer characters and returns an integer
 
 #LZO GPB Loader
 
