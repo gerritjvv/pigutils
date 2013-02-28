@@ -6,7 +6,7 @@ Its a collection of Pig UDFS, Loaders and Stores providing functionality on top 
 
 #UDFS
 
-*TO_MAP
+* TO_MAP
   org.nts.pigutils.udfs.TO_MAP(input)
   
   Converts a DataBag or Tuple into a HashMap
