@@ -131,9 +131,7 @@ public class ProtobufToPig {
       } else {
         DataBag bag = bagFactory_.newDefaultBag();
         for (Message m : messageList) {
-        	Tuple t=tupleFactory_.newTuple();
-        	t.append(new ProtobufTuple(m));
-          bag.add(t);
+          bag.add(new ProtobufTuple(m));
         }
         return bag;
       }
@@ -265,12 +263,12 @@ public class ProtobufToPig {
     Schema innerSchema = _toSchema(fieldDescriptor.getMessageType(), level+1);
     //innerSchema.setTwoLevelAccessRequired(true);
     if (fieldDescriptor.isRepeated()) {
-    	System.out.println("Field: " + fieldDescriptor.getName() +" is repeated");
+//    	System.out.println("Field: " + fieldDescriptor.getName() +" is repeated");
     	
       FieldSchema tupleSchema = new FieldSchema(new FieldSchema(fieldDescriptor.getName() + "_tuple", innerSchema, DataType.TUPLE));
       Schema schema = new Schema(tupleSchema);
       FieldSchema retSchema = new FieldSchema(fieldDescriptor.getName(), schema, DataType.BAG);
-      System.out.println("Has Schema: " + retSchema);
+//      System.out.println("Has Schema: " + retSchema);
       return retSchema;
     } else {
       return new FieldSchema(fieldDescriptor.getName(), innerSchema, DataType.TUPLE);
