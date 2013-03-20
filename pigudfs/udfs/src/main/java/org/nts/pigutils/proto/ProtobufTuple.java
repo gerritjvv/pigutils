@@ -75,7 +75,6 @@ public class ProtobufTuple implements Tuple {
 		Object fieldValue = msg.getField(fieldDescriptor);
 		if (fieldDescriptor.getType() == FieldDescriptor.Type.MESSAGE) {
 			Object innertuple = protoToPig.messageToTuple(fieldDescriptor, fieldValue);
-			System.out.println("Messagetuple: " + innertuple);
 			tuple.set(tupleIndex,
 					innertuple);
 		} else {
