@@ -54,3 +54,13 @@ Its a collection of Pig UDFS, Loaders and Stores providing functionality on top 
   store l into '/tmp/abc' using org.nts.pigutils.lucene.SolrCloudStore('localhost:9983', 'collection1');	 
 ```
 
+# Lucene Index Create Store
+
+* Create Lucene Indexes using Pig
+
+  Exmaple
+```
+   r = load 'luceneinput.csv' as (lbl:chararray,desc:chararray,score:int);
+   store r into 'target/luceneindex' using org.nts.pigutils.lucene.LuceneStore();
+```
+
