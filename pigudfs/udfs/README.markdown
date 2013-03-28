@@ -38,4 +38,19 @@ Its a collection of Pig UDFS, Loaders and Stores providing functionality on top 
  org.nts.pigutils.proto.LzoProtobuffB64LinePigStore('gpbkey')
   
   The gpbkey should be configured in your pig.properties file as a key and the value should point to the actual protobuff java class
+
+# SOLR Store
+
+* Store data to a SOLR Cloud Server
   
+  Example
+```
+  l = load '/opt/solr/exampledocs/pigbooks.csv' using PigStorage(',') as 
+	(id:chararray,cat:chararray,name:chararray,price:double,
+	inStock:chararray,author:chararray,series_t:chararray,sequence_i:chararray,
+	genre_s:chararray);
+
+	
+  store l into '/tmp/abc' using org.nts.pigutils.lucene.SolrCloudStore('localhost:9983', 'collection1');	 
+```
+

@@ -49,13 +49,11 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
 			<version>1.9.12</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.12</version>
-			<scope>provide</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -75,13 +73,11 @@
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
 			<version>2.4.1</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -98,19 +94,16 @@
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
 			<version>4.2.0</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
 			<version>4.2.0</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
 			<version>4.2.0</version>
-			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
@@ -125,4 +118,68 @@
 			<url>http://repository.apache.org/snapshots</url>
 		</repository>
 	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+					<fork>true</fork>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>rpm-maven-plugin</artifactId>
+				<version>2.0.1</version>
+				<extensions>true</extensions>
+
+				<configuration>
+					<copyright>http://www.apache.org/licenses/LICENSE-2.0</copyright>
+					<distribution>pigudfs</distribution>
+					<group>utilties</group>
+					<packager>https://github.com/gerritjvv/pigutils</packager>
+					<provides>
+						<provide>pigudfs</provide>
+					</provides>
+					<defineStatements>
+						<defineStatement>_unpackaged_files_terminate_build 0
+						</defineStatement>
+					</defineStatements>
+					<mappings>
+
+						<mapping>
+							<directory>/opt/pigudfs/lib</directory>
+							<filemode>775</filemode>
+							<username>root</username>
+							<groupname>root</groupname>
+							<sources>
+								<source>
+									<location>target/udfs-${project.version}.jar</location>
+								</source>
+							</sources>
+
+						</mapping>
+
+						<mapping>
+							<directory>/opt/pigudfs/lib</directory>
+							<filemode>775</filemode>
+							<username>root</username>
+							<groupname>root</groupname>
+							<dependency />
+
+						</mapping>
+
+
+
+					</mappings>
+
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

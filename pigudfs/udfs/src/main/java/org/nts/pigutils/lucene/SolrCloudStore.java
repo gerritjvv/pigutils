@@ -33,9 +33,11 @@ public class SolrCloudStore extends StoreFunc implements StoreMetadata {
 	RecordWriter<Writable, SolrInputDocument> writer;
 
 	String address;
-
-	public SolrCloudStore(String address) {
-		this.address = address;
+	String collection;
+	
+	public SolrCloudStore(String address, String collection) {
+		this.address= address;
+		this.collection = collection;
 	}
 
 	public void storeStatistics(ResourceStatistics stats, String location,
@@ -57,7 +59,7 @@ public class SolrCloudStore extends StoreFunc implements StoreMetadata {
 	public OutputFormat<Writable, SolrInputDocument> getOutputFormat()
 			throws IOException {
 		// not be used
-		return new SolrCloudOutputFormat(address);
+		return new SolrCloudOutputFormat(address, collection);
 	}
 
 	/**
@@ -73,6 +75,7 @@ public class SolrCloudStore extends StoreFunc implements StoreMetadata {
 		this.udfSignature = signature;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void prepareToWrite(RecordWriter writer) throws IOException {
 		this.writer = writer;
@@ -92,7 +95,7 @@ public class SolrCloudStore extends StoreFunc implements StoreMetadata {
 	public void putNext(Tuple t) throws IOException {
 
 		final SolrInputDocument doc = new SolrInputDocument();
-
+		
 		final ResourceFieldSchema[] fields = schema.getFields();
 		int docfields = 0;
 
@@ -101,8 +104,9 @@ public class SolrCloudStore extends StoreFunc implements StoreMetadata {
 
 			if (value != null) {
 				docfields++;
-				doc.addField(fields[i].getName(), value.toString());
+				doc.addField(fields[i].getName().trim(), value.toString());
 			}
+			
 		}
 
 		try {
