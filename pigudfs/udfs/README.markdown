@@ -4,6 +4,8 @@ This library is freely distributed on the Apache2 Licence.
 
 Its a collection of Pig UDFS, Loaders and Stores providing functionality on top of the current pig libraries.
 
+The latest install package (linux) is provided at : https://github.com/gerritjvv/repo/tree/master/rpms
+
 #UDFS
 
 * TO_MAP
