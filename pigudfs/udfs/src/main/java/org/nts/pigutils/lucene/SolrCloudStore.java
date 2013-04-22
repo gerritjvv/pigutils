@@ -34,9 +34,9 @@ public class SolrCloudStore extends StoreFunc implements StoreMetadata {
 
 	String address;
 	String collection;
-	
+
 	public SolrCloudStore(String address, String collection) {
-		this.address= address;
+		this.address = address;
 		this.collection = collection;
 	}
 
@@ -91,11 +91,40 @@ public class SolrCloudStore extends StoreFunc implements StoreMetadata {
 
 	}
 
+	/**
+	 * Shamelessly copied from : https://issues.apache.org/jira/secure/attachment/12484764/NUTCH-1016-2.0.patch
+	 * @param input
+	 * @return
+	 */
+	private static String stripNonCharCodepoints(String input) {
+		StringBuilder retval = new StringBuilder(input.length());
+		char ch;
+
+		for (int i = 0; i < input.length(); i++) {
+			ch = input.charAt(i);
+
+			// Strip all non-characters
+			// http://unicode.org/cldr/utility/list-unicodeset.jsp?a=[:Noncharacter_Code_Point=True:]
+			// and non-printable control characters except tabulator, new line
+			// and carriage return
+			if (ch % 0x10000 != 0xffff && // 0xffff - 0x10ffff range step
+											// 0x10000
+					ch % 0x10000 != 0xfffe && // 0xfffe - 0x10fffe range
+					(ch <= 0xfdd0 || ch >= 0xfdef) && // 0xfdd0 - 0xfdef
+					(ch > 0x1F || ch == 0x9 || ch == 0xa || ch == 0xd)) {
+
+				retval.append(ch);
+			}
+		}
+
+		return retval.toString();
+	}
+
 	@Override
 	public void putNext(Tuple t) throws IOException {
 
 		final SolrInputDocument doc = new SolrInputDocument();
-		
+
 		final ResourceFieldSchema[] fields = schema.getFields();
 		int docfields = 0;
 
@@ -104,9 +133,9 @@ public class SolrCloudStore extends StoreFunc implements StoreMetadata {
 
 			if (value != null) {
 				docfields++;
-				doc.addField(fields[i].getName().trim(), value.toString());
+				doc.addField(fields[i].getName().trim(), stripNonCharCodepoints(value.toString()));
 			}
-			
+
 		}
 
 		try {
