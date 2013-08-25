@@ -41,6 +41,17 @@ The latest install package (linux) is provided at : https://github.com/gerritjvv
   
   The gpbkey should be configured in your pig.properties file as a key and the value should point to the actual protobuff java class
 
+# JSON Loader
+
+  This json loader loads records of type Map into a java HashMap using the Jackson ObjectMapper.
+  All types are correctly translated into their java types i.e. {"age":1} will result in a hash map with key=String("age") and value=Integer(1)
+
+  To use
+
+  l = load 'myfile.json.gz' using org.nts.pigutils.udfs.JSONLoader();
+  r = foreach l generate l.map#age, l.map#name;
+
+
 # SOLR Store
 
 * Store data to a SOLR Cloud Server
