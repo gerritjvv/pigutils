@@ -46,11 +46,15 @@ The latest install package (linux) is provided at : https://github.com/gerritjvv
   This json loader loads records of type Map into a java HashMap using the Jackson ObjectMapper.
   All types are correctly translated into their java types i.e. ``` {"age":1} ``` will result in a hash map with ``` key=String("age") and value=Integer(1) ```
 
+  Note:
+
+   All lists and Object arrays are converted to Tuples
+
   To use
 
 ```
   l = load 'myfile.json.gz' using org.nts.pigutils.udfs.JSONLoader();
-  r = foreach l generate l.map#age, l.map#name;
+  r = foreach l generate m#'age', m#'name';
 ```
 
 # SOLR Store
