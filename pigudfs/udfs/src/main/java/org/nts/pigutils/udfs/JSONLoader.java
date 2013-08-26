@@ -29,7 +29,7 @@ public class JSONLoader extends PigStorage {
 	public final Tuple _getNext(Tuple tuple) throws IOException {
 
 		Object str = null;
-		if (tuple.size() > 0 && (str = tuple.get(0)) != null) {
+		if (tuple != null && tuple.size() > 0 && (str = tuple.get(0)) != null) {
 			@SuppressWarnings("rawtypes")
 			Map map = removeLists(mapper.readValue(str.toString(),
 					HashMap.class));
