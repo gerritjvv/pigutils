@@ -22,15 +22,17 @@ The latest install package (linux) is provided at : https://github.com/gerritjvv
  
   Important, keys are always converted to Strings.
 
-* FIND_MAP
+* FIND_MAP and FIND_MAP_MAP
   
   Does a regex pattern find on each key, if true the value for that key is returned.
 
+  The FIND_MAP_MAP UDF expects the value to be a Map and casts it.
+
 ```
   DEFINE FIND org.nts.pigutils.udfs.MAP_FIND('.*(info)+');
+  DEFINE FIND_MAP org.nts.pigutils.udfs.MAP_FIND_MAP('.*(-csv)+');
 
-  r = foreach a generate FIND(mymap);
-
+  r = foreach a generate FIND(mymap), FIND_MAP(mymap)#'size';
 
 ```
 

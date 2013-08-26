@@ -51,7 +51,7 @@ public class MAP_FIND extends EvalFunc<Object> {
 		List<FuncSpec> funcList = new ArrayList<FuncSpec>();
 
 		List<Schema.FieldSchema> arguments = Arrays
-				.asList(new Schema.FieldSchema(null, DataType.CHARARRAY));
+				.asList(new Schema.FieldSchema(null, DataType.UNKNOWN));
 
 		funcList.add(new FuncSpec(this.getClass().getName(), new Schema(
 				arguments)));

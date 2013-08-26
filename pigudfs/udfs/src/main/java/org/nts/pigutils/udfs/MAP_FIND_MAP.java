@@ -15,7 +15,7 @@ import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 
 /**
- * Finds a partial key based on a regex and return the value
+ * Finds a partial key based on a regex and return the value as a Map
  * 
  */
 public class MAP_FIND_MAP extends EvalFunc<Map> {
@@ -51,7 +51,7 @@ public class MAP_FIND_MAP extends EvalFunc<Map> {
 		List<FuncSpec> funcList = new ArrayList<FuncSpec>();
 
 		List<Schema.FieldSchema> arguments = Arrays
-				.asList(new Schema.FieldSchema(null, DataType.CHARARRAY));
+				.asList(new Schema.FieldSchema(null, DataType.MAP));
 
 		funcList.add(new FuncSpec(this.getClass().getName(), new Schema(
 				arguments)));
