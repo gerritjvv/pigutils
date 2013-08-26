@@ -22,6 +22,18 @@ The latest install package (linux) is provided at : https://github.com/gerritjvv
  
   Important, keys are always converted to Strings.
 
+* FIND_MAP
+  
+  Does a regex pattern find on each key, if true the value for that key is returned.
+
+```
+  DEFINE FIND org.nts.pigutils.udfs.MAP_FIND('.*(info)+');
+
+  r = foreach a generate FIND(mymap);
+
+
+```
+
 * DateFormat
   org.nts.pigutils.udfs.DateFormat(tsMillis, 'formatstring')
   
