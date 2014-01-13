@@ -1,10 +1,14 @@
-== Pig Utils and UDFS ==
+== Pig/Hive Utils and UDFS ==
 
 === Overview ===
 
-This project contains a series of UDFs, Loaders and Stores for pig.
+This project is divided into two, pigutils and hiveserdes.
+
+
+The pigutils project contains a series of UDFs, Loaders and Stores for pig.
 
 Updated to contain code for reading ProtoBuff LZO Base64 encoded Records.  
+
 
 === RPM / DEB ===
 

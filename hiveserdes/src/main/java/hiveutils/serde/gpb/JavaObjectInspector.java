@@ -10,6 +10,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.StandardStructObjectInspect
 import org.apache.hadoop.hive.serde2.objectinspector.StructField;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -50,6 +51,8 @@ public class JavaObjectInspector extends StandardStructObjectInspector{
 	private final static Object convert(Object obj) {
 		if(obj instanceof EnumValueDescriptor)
 			return ((EnumValueDescriptor)obj).getName();
+		else if(obj instanceof ByteString)
+			return ((ByteString)obj).toByteArray();
 		else 
 			return obj;
 	}
