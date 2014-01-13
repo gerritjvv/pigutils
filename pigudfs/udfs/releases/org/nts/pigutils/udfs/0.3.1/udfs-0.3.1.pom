@@ -4,7 +4,7 @@
 
 	<groupId>org.nts.pigutils</groupId>
 	<artifactId>udfs</artifactId>
-	<version>0.2.0</version>
+	<version>0.3.1</version>
 	<packaging>jar</packaging>
 
 	<name>udfs</name>

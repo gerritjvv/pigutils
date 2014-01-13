@@ -4,6 +4,33 @@
 
 This project contains a series of UDFs, Loaders and Stores for pig.
 
+Updated to contain code for reading ProtoBuff LZO Base64 encoded Records.  
+
+=== RPM / DEB ===
+
+This project compiles into an RPM and via the help of alien you can create a DEB distribution
+
+
+To build the RPM type:
+
+{{{
+  
+   mvn rpm:rpm 
+
+}}}
+
+To build the DEB type:
+
+{{{
+   
+   sudo alien <rpm file>
+
+}}}
+
+The package installs to:
+ 
+ /opt/pigudfs
+
 === Maven ===
 
 For easy integration with maven add the following entries to your pom.xml file:

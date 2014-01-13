@@ -36,7 +36,6 @@ import org.apache.pig.builtin.JsonMetadata;
 import org.apache.pig.data.DataBag;
 import org.apache.pig.data.DataType;
 import org.apache.pig.data.Tuple;
-import org.apache.pig.impl.util.StorageUtil;
 import org.apache.pig.impl.util.UDFContext;
 import org.apache.pig.impl.util.Utils;
 import org.apache.pig.parser.ParserException;

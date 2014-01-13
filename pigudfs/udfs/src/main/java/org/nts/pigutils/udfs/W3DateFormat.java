@@ -9,18 +9,12 @@ import org.apache.pig.EvalFunc;
 import org.apache.pig.data.Tuple;
 
 /**
- * Takes a timestamp as input for formats it into a date pattern based on
- * SimpleDateFormat.<br/>
- * To use:<br/>
- * DateFormat(ts, '${FORMAT STRING}', 'timezone')<br/>
- * e.g.<br/>
- * DateFormat(ts, 'yyyy-MM-dd')<br/>
- * 
+ * Converts time in milliseconds to the W3 DateFormat specification  (http://www.w3.org/TR/xmlschema-2/)
  */
-public class DateFormat extends EvalFunc<String>{
+public class W3DateFormat extends EvalFunc<String>{
 
 	enum ERROR { WRONG_TS_TYPE, TS_NULL }
-	
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	@Override
 	public String exec(Tuple tuple) throws IOException {
 		
@@ -39,14 +33,7 @@ public class DateFormat extends EvalFunc<String>{
 			return null;
 		}
 		
-		String datePattern = tuple.get(1).toString();
-	
-		SimpleDateFormat format = new SimpleDateFormat(datePattern);
-		if(tuple.size() > 2){
-			format.setTimeZone(TimeZone.getTimeZone(tuple.get(2).toString()));
-		}
-		
-		return new SimpleDateFormat(datePattern).format(new Date(ts));
+		return df.format(new Date(ts));
 		
 	}
 

@@ -32,4 +32,19 @@ public class TestDateFormat {
 
 	}
 
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDateFormatTimeZone() throws IOException {
+
+		Date d = new Date();
+
+		DateFormat udf = new DateFormat();
+		String df = udf.exec(TupleFactory.getInstance().newTuple(
+				Arrays.asList(d.getTime(), "yyyy-MM-dd", "UTC")));
+
+		assertEquals(new SimpleDateFormat("yyyy-MM-dd").format(d), df);
+
+	}
+
 }
