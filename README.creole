@@ -50,6 +50,14 @@ For easy integration with maven add the following entries to your pom.xml file:
                         <url>https://github.com/gerritjvv/pigutils/raw/master/pigudfs/udfs/releases</url>
                 </repository>
         </repositories>
+hiveutils/hiveserdes
+        <repositories>
+                <repository>
+                        <id>releases</id>
+                        <url>https://github.com/gerritjvv/pigutils/raw/master/hiveserdes/releases</url>
+                </repository>
+        </repositories>
+
 
 }}}
 
@@ -63,5 +71,12 @@ For easy integration with maven add the following entries to your pom.xml file:
 			<artifactId>udfs</artifactId>
 			<version>0.2.0</version>
 		</dependency>
+    
+                <dependency>
+                        <groupId>hiveutils</groupId>
+                        <artifactId>hiveserdes</artifactId>
+                        <version>0.1.0</version>
+                </dependency>
+           
 
 }}}
