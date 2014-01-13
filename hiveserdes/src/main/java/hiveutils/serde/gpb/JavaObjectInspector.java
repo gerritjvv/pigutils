@@ -11,6 +11,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.StructField;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 
@@ -41,7 +42,16 @@ public class JavaObjectInspector extends StandardStructObjectInspector{
 	public Object getStructFieldData(Object data, StructField fieldRef) {
 		final Map<String, Object> m = (Map<String,Object>)data;
 		
-		return m.get(fieldRef.getFieldName());
+		return convert(m.get(fieldRef.getFieldName()));
+	}
+
+	
+
+	private final static Object convert(Object obj) {
+		if(obj instanceof EnumValueDescriptor)
+			return ((EnumValueDescriptor)obj).getName();
+		else 
+			return obj;
 	}
 
 

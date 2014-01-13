@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import com.google.protobuf.Message;
@@ -43,9 +44,14 @@ public class GPBTransform {
 		return objMap;
 	}
 
+	@SuppressWarnings("rawtypes")
 	private static final Object parseMessage(Object obj) {
 		if (obj instanceof Message)
 			return convert((Message) obj);
+		else if(obj.getClass().isEnum())
+			return ((Enum)obj).name();
+		else if(obj instanceof EnumValueDescriptor)
+			return ((EnumValueDescriptor)obj).getName();
 		else
 			return obj;
 	}
