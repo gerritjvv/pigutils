@@ -39,7 +39,7 @@ public class ProtobufClassUtil {
 					+ " referred to by " + clsMapping, e);
 		}
 
-		LOG.info("Using " + protoClass.getName() + " mapped by " + clsMapping);
+		//LOG.info("Using " + protoClass.getName() + " mapped by " + clsMapping);
 
 		return protoClass;
 
