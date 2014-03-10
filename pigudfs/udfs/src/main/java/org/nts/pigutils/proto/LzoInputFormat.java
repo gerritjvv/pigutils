@@ -79,7 +79,7 @@ public abstract class LzoInputFormat<K, V> extends FileInputFormat<K, V> {
   protected void addInputPath(List<FileStatus> results, FileSystem fs,
                  FileStatus pathStat, boolean recursive) throws IOException {
     Path path = pathStat.getPath();
-    if (pathStat.isDir()) {
+    if (pathStat.isDirectory()) {
       if (recursive) {
         for(FileStatus stat: fs.listStatus(path, hiddenPathFilter)) {
           addInputPath(results, fs, stat, recursive);

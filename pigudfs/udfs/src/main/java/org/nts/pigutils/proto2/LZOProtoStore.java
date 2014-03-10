@@ -165,19 +165,19 @@ public class LZOProtoStore extends PigStorage {
 
 			boolean printedError = false;
 
-			System.out.println("next reader " + reader.nextKeyValue());
 			// read while true
 			// we only break if we can read a correct value
 			while (reader.nextKeyValue()) {
 
 				BytesWritable value = reader.getCurrentValue();
 				if (value.getLength() > 0) {
-
+					
 					try {
+						
+						//System.out.println("str: " + new String(value.getBytes()));
 						Message.Builder builder = (Message.Builder) newBuilder
 								.invoke(null, new Object[] {});
-						Message protoValue = builder
-								.mergeFrom(value.getBytes()).build();
+						Message protoValue = builder.mergeFrom(value.getBytes(), 0, value.getLength()).build();
 						
 						if (protoValue != null) {
 
@@ -235,7 +235,6 @@ public class LZOProtoStore extends PigStorage {
 					PigException.REMOTE_ENVIRONMENT, e);
 		}
 
-		System.out.println("tuple: " + tuple.size());
 		return tuple;
 	}
 	

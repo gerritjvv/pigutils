@@ -11,7 +11,6 @@ import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.data.DataBag;
 import org.apache.pig.data.DataType;
 import org.apache.pig.data.DefaultDataBag;
-import org.apache.pig.data.DefaultTupleFactory;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
@@ -23,7 +22,7 @@ import org.apache.pig.impl.logicalLayer.schema.Schema;
  */
 public class TO_BAG extends EvalFunc<DataBag> {
 
-	private TupleFactory factory = DefaultTupleFactory.getInstance();
+	private TupleFactory factory = TupleFactory.getInstance();
 	
 	@Override
 	public DataBag exec(Tuple tuple) throws IOException {

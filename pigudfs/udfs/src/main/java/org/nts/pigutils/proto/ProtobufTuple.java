@@ -4,6 +4,7 @@ import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.pig.backend.executionengine.ExecException;
@@ -28,6 +29,8 @@ public class ProtobufTuple implements Tuple {
 	Message msg;
 	int[] requiredColumns;
 
+	boolean isNull = false;
+	
 	public ProtobufTuple() {
 
 		realTuple = TupleFactory.getInstance().newTuple();
@@ -106,15 +109,16 @@ public class ProtobufTuple implements Tuple {
 	}
 
 	public boolean isNull() {
-		return realTuple.isNull();
+		return isNull;
 	}
 
 	public boolean isNull(int idx) throws ExecException {
 		return realTuple.isNull(idx);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void reference(Tuple arg) {
-		realTuple.reference(arg);
+		realTuple.reference(realTuple);
 		// Ignore the Message from now on.
 	}
 
@@ -123,7 +127,7 @@ public class ProtobufTuple implements Tuple {
 	}
 
 	public void setNull(boolean isNull) {
-		realTuple.setNull(isNull);
+		this.isNull = isNull;
 	}
 
 	public int size() {
@@ -134,6 +138,7 @@ public class ProtobufTuple implements Tuple {
 		return realTuple.toDelimitedString(delim);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void readFields(DataInput inp) throws IOException {
 		Message.Builder builder = msg.newBuilderForType();
 		try {
@@ -152,6 +157,7 @@ public class ProtobufTuple implements Tuple {
 		realTuple.write(out);
 	}
 
+	@SuppressWarnings("unchecked")
 	public int compareTo(Object obj) {
 		return realTuple.compareTo(obj);
 	}
@@ -159,4 +165,9 @@ public class ProtobufTuple implements Tuple {
 	public Object get(int index) throws ExecException {
 		return realTuple.get(index);
 	}
+
+	public Iterator<Object> iterator() {
+		return realTuple.iterator();
+	}
+	
 }

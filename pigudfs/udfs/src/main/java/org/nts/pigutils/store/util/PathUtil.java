@@ -65,7 +65,7 @@ public class PathUtil {
 				return;
 			}
 
-			if (stat.isDir()) {
+			if (stat.isDirectory()) {
 
 				// check for glob status
 
@@ -101,7 +101,7 @@ public class PathUtil {
 		}
 
 		// if a directory, we iterate through all the sub directories
-		if (fileStatus.isDir()) {
+		if (fileStatus.isDirectory()) {
 			FileStatus[] statArr = fs.listStatus(path);
 			for (FileStatus subStat : statArr) {
 				listRecursive(subStat, fs, fileStatusFiles);

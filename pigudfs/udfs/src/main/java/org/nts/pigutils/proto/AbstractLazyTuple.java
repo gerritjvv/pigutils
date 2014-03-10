@@ -24,6 +24,8 @@ public abstract class AbstractLazyTuple implements Tuple {
   protected boolean isRef; // i.e. reference() is invoked.
   protected BitSet idxBits;
 
+  boolean isNull = false;
+  
   protected void initRealTuple(int tupleSize) {
     realTuple = tf.newTuple(tupleSize);
     idxBits = new BitSet(tupleSize);
@@ -63,7 +65,7 @@ public abstract class AbstractLazyTuple implements Tuple {
   }
 
   public boolean isNull() {
-    return realTuple.isNull();
+    return isNull;
   }
 
   public boolean isNull(int idx) throws ExecException {
@@ -84,7 +86,7 @@ public abstract class AbstractLazyTuple implements Tuple {
   }
 
   public void setNull(boolean isNull) {
-    realTuple.setNull(isNull);
+    this.isNull = isNull;
   }
 
   public int size() {

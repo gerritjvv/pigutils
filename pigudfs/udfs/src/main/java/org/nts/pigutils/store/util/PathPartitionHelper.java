@@ -201,7 +201,7 @@ public class PathPartitionHelper {
 				final FileSystem fs = inputPath.getFileSystem(ctx
 						.getConfiguration());
 
-				if (fs.getFileStatus(inputPath).isDir()) {
+				if (fs.getFileStatus(inputPath).isDirectory()) {
 					// assure that we are at the root of the partition tree.
 					FileStatus fileStatusArr[] = fs.listStatus(inputPath);
 
@@ -298,7 +298,7 @@ public class PathPartitionHelper {
 
 		// iterate over directories if fileStatus is a dir.
 
-		if (fileStatus.isDir()) {
+		if (fileStatus.isDirectory()) {
 
 			final FileStatus[] childStatusArr;
 
