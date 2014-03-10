@@ -14,7 +14,6 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.pig.data.Tuple;
 
-import com.google.protobuf.AbstractMessage.Builder;
 import com.google.protobuf.Message;
 import com.hadoop.compression.lzo.LzopCodec;
 
@@ -89,6 +88,7 @@ public class LzoProtobufB64LineRecordWriter extends
 		CodecPool.returnCompressor(compressor);
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public void write(Writable key, Tuple tuple) throws IOException,
 			InterruptedException {
@@ -109,4 +109,3 @@ public class LzoProtobufB64LineRecordWriter extends
 	}
 
 }
-

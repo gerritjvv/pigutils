@@ -17,7 +17,7 @@ import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.mapreduce.RecordReader;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.pig.Expression;
 import org.apache.pig.LoadMetadata;
@@ -70,9 +70,9 @@ public class LzoProtobuffB64LinePigStore extends PigStorage implements
 	};
 
 	String clsMapping;
-	
+
 	private Base64 base64 = new Base64(0);
-	
+
 	private final ProtobufToPig protoToPig = new ProtobufToPig();
 
 	private int[] requiredIndices = null;
@@ -92,6 +92,7 @@ public class LzoProtobuffB64LinePigStore extends PigStorage implements
 	 */
 	transient PathPartitionHelper pathPartitionerHelper = new PathPartitionHelper();
 
+	private LzoProtobufB64LineRecordWriter writer;
 	private LzoLineRecordReader reader;
 
 	transient Set<String> partitionColumns = null;
@@ -202,6 +203,7 @@ public class LzoProtobuffB64LinePigStore extends PigStorage implements
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	public Tuple getNext() throws IOException {
 		Tuple tuple = null;
@@ -223,9 +225,7 @@ public class LzoProtobuffB64LinePigStore extends PigStorage implements
 						Message.Builder builder = (Message.Builder) newBuilder
 								.invoke(null, new Object[] {});
 						Message protoValue = builder.mergeFrom(
-								base64
-										.decodeBase64(value.toString()))
-								.build();
+								base64.decodeBase64(value.toString())).build();
 						if (protoValue != null) {
 
 							if (requiredIndices.length > 0) {
@@ -234,7 +234,7 @@ public class LzoProtobuffB64LinePigStore extends PigStorage implements
 							} else {
 								tuple = TupleFactory.getInstance().newTuple();
 							}
-							
+
 							Path path = reader.getSplitPath();
 
 							if (currentPath == null
@@ -318,24 +318,37 @@ public class LzoProtobuffB64LinePigStore extends PigStorage implements
 
 		schemaLength = schema.size() + partitionKeys.length;
 
-		
 		this.reader = (LzoLineRecordReader) reader;
 	}
 
-	
+	@Override
+	public void putNext(Tuple tuple) throws IOException {
+		try {
+			writer.write(null, tuple);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public void prepareToWrite(RecordWriter writer) {
+		this.writer = (LzoProtobufB64LineRecordWriter) writer;
+	}
+
 	@Override
 	public ResourceSchema getSchema(String filename, Job job)
 			throws IOException {
 
 		Set<String> keys = getPartitionColumns(filename, job);
-		
-		Schema schema = null;
-		try{
-		schema = protoToPig.toSchema(Protobufs
-				.getMessageDescriptor(ProtobufClassUtil.loadProtoClass(
-						clsMapping, job.getConfiguration())));
 
-		}finally{
+		Schema schema = null;
+		try {
+			schema = protoToPig.toSchema(Protobufs
+					.getMessageDescriptor(ProtobufClassUtil.loadProtoClass(
+							clsMapping, job.getConfiguration())));
+
+		} finally {
 		}
 		if (keys != null && keys.size() > 0) {
 			for (String key : keys) {
@@ -346,7 +359,6 @@ public class LzoProtobuffB64LinePigStore extends PigStorage implements
 				}
 			}
 		}
-
 
 		return new ResourceSchema(schema);
 	}
